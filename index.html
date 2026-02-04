@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnionSearch</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #888;
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .lang-btn {
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #666;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .lang-btn:hover, .lang-btn.active {
+            background: #2a2a2a;
+            color: #aaa;
+            border-color: #555;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        .ascii-logo {
+            text-align: center;
+            color: #555;
+            font-size: 10px;
+            line-height: 1.2;
+            white-space: pre;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(100, 100, 100, 0.3);
+        }
+
+        .tagline {
+            text-align: center;
+            color: #444;
+            margin-bottom: 40px;
+            font-size: 14px;
+            letter-spacing: 3px;
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 20px;
+            background: #111;
+            border: 1px solid #333;
+            color: #aaa;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #555;
+            box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
+        }
+
+        .search-input::placeholder {
+            color: #444;
+        }
+
+        .search-btn {
+            padding: 15px 25px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-left: none;
+            color: #666;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            background: #2a2a2a;
+            color: #aaa;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            background: transparent;
+            border: 1px solid #222;
+            color: #555;
+            padding: 8px 20px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            border-color: #444;
+            color: #888;
+            background: #151515;
+        }
+
+        .results {
+            border-top: 1px solid #222;
+            padding-top: 20px;
+        }
+
+        .results-count {
+            color: #444;
+            font-size: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .result-item {
+            background: #111;
+            border: 1px solid #1a1a1a;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .result-item:hover {
+            border-color: #333;
+            background: #151515;
+        }
+
+        .result-title {
+            color: #777;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .result-title span {
+            color: #444;
+            font-size: 12px;
+        }
+
+        .result-url {
+            color: #3a3a3a;
+            font-size: 11px;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .result-desc {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .result-category {
+            display: inline-block;
+            background: #1a1a1a;
+            color: #555;
+            padding: 3px 10px;
+            font-size: 10px;
+            margin-top: 10px;
+            border: 1px solid #252525;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #444;
+            padding: 40px;
+        }
+
+        .warning {
+            text-align: center;
+            color: #3a3a3a;
+            font-size: 11px;
+            margin-top: 40px;
+            padding: 20px;
+            border: 1px dashed #222;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            color: #333;
+            font-size: 11px;
+            margin-top: 50px;
+            padding: 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+            color: #3a3a3a;
+            font-size: 11px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            color: #555;
+            font-size: 18px;
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            .ascii-logo {
+                font-size: 6px;
+            }
+            .categories {
+                gap: 8px;
+            }
+            .category-btn {
+                padding: 6px 12px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLanguage('en')">EN</button>
+        <button class="lang-btn" onclick="setLanguage('pt')">PT</button>
+    </div>
+
+    <div class="container">
+        <pre class="ascii-logo">
+   ██████╗ ███╗   ██╗██╗ ██████╗ ███╗   ██╗
+  ██╔═══██╗████╗  ██║██║██╔═══██╗████╗  ██║
+  ██║   ██║██╔██╗ ██║██║██║   ██║██╔██╗ ██║
+  ██║   ██║██║╚██╗██║██║██║   ██║██║╚██╗██║
+  ╚██████╔╝██║ ╚████║██║╚██████╔╝██║ ╚████║
+   ╚═════╝ ╚═╝  ╚═══╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+  ███████╗███████╗ █████╗ ██████╗  ██████╗██╗  ██╗
+  ██╔════╝██╔════╝██╔══██╗██╔══██╗██╔════╝██║  ██║
+  ███████╗█████╗  ███████║██████╔╝██║     ███████║
+  ╚════██║██╔══╝  ██╔══██║██╔══██╗██║     ██╔══██║
+  ███████║███████╗██║  ██║██║  ██║╚██████╗██║  ██║
+  ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+        </pre>
+
+        <p class="tagline" data-i18n="tagline">:: NAVIGATE THE DEPTHS ::</p>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number" id="site-count">0</span>
+                <span data-i18n="indexed">INDEXED SITES</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="category-count">0</span>
+                <span data-i18n="categories">CATEGORIES</span>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search the hidden network...">
+        </div>
+
+        <div class="categories" id="categories">
+            <button class="category-btn active" data-category="all" data-i18n="catAll">[ALL]</button>
+            <button class="category-btn" data-category="markets" data-i18n="catMarkets">[MARKETS]</button>
+            <button class="category-btn" data-category="forums" data-i18n="catForums">[FORUMS]</button>
+            <button class="category-btn" data-category="services" data-i18n="catServices">[SERVICES]</button>
+            <button class="category-btn" data-category="news" data-i18n="catNews">[NEWS]</button>
+            <button class="category-btn" data-category="tools" data-i18n="catTools">[TOOLS]</button>
+        </div>
+
+        <div class="results" id="results"></div>
+
+        <div class="warning" data-i18n="warning">
+            ⚠ WARNING: This is a simulation for educational purposes only.
+            Always use caution when browsing unknown networks.
+        </div>
+
+        <div class="footer">
+            OnionSearch v2.0 | <span data-i18n="footer">Encrypted & Anonymous</span>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                tagline: ":: NAVIGATE THE DEPTHS ::",
+                indexed: "INDEXED SITES",
+                categories: "CATEGORIES",
+                searchPlaceholder: "Search the hidden network...",
+                catAll: "[ALL]",
+                catMarkets: "[MARKETS]",
+                catForums: "[FORUMS]",
+                catServices: "[SERVICES]",
+                catNews: "[NEWS]",
+                catTools: "[TOOLS]",
+                warning: "⚠ WARNING: This is a simulation for educational purposes only. Always use caution when browsing unknown networks.",
+                footer: "Encrypted & Anonymous",
+                resultsFound: "results found",
+                noResults: "No results found. Try different keywords.",
+                verified: "[VERIFIED]",
+                unverified: "[UNVERIFIED]"
+            },
+            pt: {
+                tagline: ":: NAVEGUE NAS PROFUNDEZAS ::",
+                indexed: "SITES INDEXADOS",
+                categories: "CATEGORIAS",
+                searchPlaceholder: "Buscar na rede oculta...",
+                catAll: "[TODOS]",
+                catMarkets: "[MERCADOS]",
+                catForums: "[FÓRUNS]",
+                catServices: "[SERVIÇOS]",
+                catNews: "[NOTÍCIAS]",
+                catTools: "[FERRAMENTAS]",
+                warning: "⚠ AVISO: Esta é uma simulação apenas para fins educacionais. Sempre tenha cuidado ao navegar em redes desconhecidas.",
+                footer: "Criptografado & Anônimo",
+                resultsFound: "resultados encontrados",
+                noResults: "Nenhum resultado encontrado. Tente palavras-chave diferentes.",
+                verified: "[VERIFICADO]",
+                unverified: "[NÃO VERIFICADO]"
+            }
+        };
+
+        // Registered websites database
+        const websites = [
+            {
+                id: 1,
+                title: { en: "Z-Library", pt: "Z-Library" },
+                url: "bookszlibb74ugqojhzhg2a63w5i2atv5bqarulgczawnbmsb6s6qead.onion",
+                description: { 
+                    en: "One of the largest free online libraries in the world, with millions of books and academic articles.",
+                    pt: "Uma das maiores bibliotecas online gratuitas do mundo, com milhões de livros e artigos acadêmicos."
+                },
+                category: "tools",
+                verified: true
+            },
+            {
+                id: 2,
+                title: { en: "DuckDuckGo", pt: "DuckDuckGo" },
+                url: "duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion/",
+                description: { 
+                    en: "Search engine that does not track searches or collect data.",
+                    pt: "Mecanismo de busca que não rastreia pesquisas nem coleta dados."
+                },
+                category: "tools",
+                verified: true
+            },
+            {
+                id: 3,
+                title: { en: "Eternal Hosting", pt: "Eternal Hosting" },
+                url: "eternalcbrzpicytj4zyguygpmkjlkddxob7tptlr25cdipe5svyqoqd.onion",
+                description: { 
+                    en: "File hosting focused on anonymity and privacy.",
+                    pt: "Hospedagem de arquivos voltado ao anonimato e à privacidade."
+                },
+                category: "services",
+                verified: true
+            },
+            {
+                id: 4,
+                title: { en: "PissMail", pt: "PissMail" },
+                url: "pissmaiamldg5ciulncthgzudvh5d55dismyqf6qdkx372n2b5osefid.onion",
+                description: { 
+                    en: "Email service focused on anonymity and privacy, without requiring personal data for registration.",
+                    pt: "Serviço de e-mail focado em anonimato e privacidade, sem exigir dados pessoais para cadastro."
+                },
+                category: "services",
+                verified: true
+            },
+            {
+                id: 5,
+                title: { en: "DigAI", pt: "DigAI" },
+                url: "digdig2nugjpszzmqe5ep2bk7lqfpdlyrkojsx2j6kzalnrqtwedr3id.onion",
+                description: { 
+                    en: "Artificial intelligence free from censorship and restrictions.",
+                    pt: "Inteligência artificial livre de censura e restrições."
+                },
+                category: "tools",
+                verified: true
+            },
+            {
+                id: 6,
+                title: { en: "Freedom of the Press Foundation", pt: "Freedom of the Press Foundation" },
+                url: "fpfjxcrmw437h6z2xl3w4czl55kvkmxpapg37bbopsafdu7q454byxid.onion",
+                description: { 
+                    en: "Nonprofit organization in the United States that defends freedom of the press and the right to information.",
+                    pt: "Organização sem fins lucrativos dos EUA que defende a liberdade de imprensa e o direito à informação."
+                },
+                category: "news",
+                verified: true
+            }
+        ];
+
+        let currentLanguage = 'en';
+        let currentCategory = 'all';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateStats();
+            displayResults(websites);
+            setupEventListeners();
+        });
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            
+            // Update language buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === lang.toUpperCase()) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Update all translatable elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key]) {
+                    el.placeholder = translations[lang][key];
+                }
+            });
+
+            // Refresh results with new language
+            search();
+        }
+
+        function setupEventListeners() {
+            // Category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.getAttribute('data-category');
+                    search();
+                });
+            });
+
+            // Search on Enter key
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    search();
+                }
+            });
+
+            // Live search
+            document.getElementById('searchInput').addEventListener('input', () => {
+                search();
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('site-count').textContent = websites.length;
+            const categories = [...new Set(websites.map(w => w.category))];
+            document.getElementById('category-count').textContent = categories.length;
+        }
+
+        function search() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            let filtered = websites.filter(site => {
+                // Category filter
+                if (currentCategory !== 'all' && site.category !== currentCategory) {
+                    return false;
+                }
+
+                // Search query filter
+                if (query) {
+                    const title = site.title[currentLanguage].toLowerCase();
+                    const desc = site.description[currentLanguage].toLowerCase();
+                    const url = site.url.toLowerCase();
+                    
+                    return title.includes(query) || desc.includes(query) || url.includes(query);
+                }
+
+                return true;
+            });
+
+            displayResults(filtered);
+        }
+
+        function displayResults(results) {
+            const container = document.getElementById('results');
+            const t = translations[currentLanguage];
+
+            if (results.length === 0) {
+                container.innerHTML = `<div class="no-results">${t.noResults}</div>`;
+                return;
+            }
+
+            let html = `<div class="results-count">${results.length} ${t.resultsFound}</div>`;
+
+            results.forEach(site => {
+                const verifiedLabel = site.verified ? t.verified : t.unverified;
+                const verifiedClass = site.verified ? 'color: #4a4a4a;' : 'color: #3a3a3a;';
+                
+                html += `
+                    <div class="result-item">
+                        <div class="result-title">
+                            ${site.title[currentLanguage]}
+                            <span style="${verifiedClass}">${verifiedLabel}</span>
+                        </div>
+                        <div class="result-url">${site.url}</div>
+                        <div class="result-desc">${site.description[currentLanguage]}</div>
+                        <span class="result-category">${getCategoryLabel(site.category)}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function getCategoryLabel(category) {
+            const key = 'cat' + category.charAt(0).toUpperCase() + category.slice(1);
+            return translations[currentLanguage][key] || category.toUpperCase();
+        }
+    </script>
+</body>
+</html>

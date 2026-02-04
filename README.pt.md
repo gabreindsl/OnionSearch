@@ -1,0 +1,5 @@
+O **OnionSearch** é um motor de busca focado na **deep web**, mais especificamente em sites acessíveis pela rede **Tor (.onion)**. Diferente da imagem negativa que costuma cercar a darknet, o OnionSearch foi criado com o objetivo de **organizar e divulgar conteúdos legítimos e úteis** desse ambiente.
+
+Ele funciona como um **acervo de links categorizados**, reunindo sites sobre **privacidade, liberdade de expressão, jornalismo independente, fóruns de discussão, bibliotecas digitais, projetos acadêmicos, serviços de comunicação segura** e iniciativas de ativismo. Assim, ajuda usuários a encontrar informações confiáveis sem precisar navegar às cegas pela rede Tor.
+
+Em resumo, o OnionSearch busca **mostrar o lado positivo da darknet**, destacando seu papel como espaço de resistência à censura, proteção de dados pessoais e acesso livre à informação, em vez de associá-la apenas a atividades ilegais.
