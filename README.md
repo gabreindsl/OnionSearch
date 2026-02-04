@@ -1,4 +1,4 @@
-[Leia esta página em português]()
+[Leia esta página em português](https://github.com/gabreindsl/OnionSearch/blob/main/README.pt.md)
 
 **OnionSearch** is a search engine focused on the **deep web**, more specifically on websites accessible through the **Tor network (.onion)**. Unlike the negative image often associated with the darknet, OnionSearch was created with the goal of **organizing and promoting legitimate and useful content** from this environment.
 
